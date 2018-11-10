@@ -7,6 +7,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
   accessToken: 'pk.eyJ1Ijoib21hci1uYXZhcnJvIiwiYSI6ImNpanN2ZWZxZzBoa291eWx4ZWdsajl1OGIifQ.SH4OG9811nirTGJ3rE4DHw'
 }).addTo(mymap);
 
+
 // COLORES
 function qualitativeColors(d) {
   return d === "0" ? '#e41a1c' :
@@ -57,6 +58,23 @@ ItinerarioLayer.addTo(mymap);
 var featureLayers = {
   "Itinerario": ItinerarioLayer
 };
+
+
+
 var geojson = L.control.layers(featureLayers, null, {
   collapsed: false
 }).addTo(mymap);
+
+function connectTheDots(data) {
+  var c = [];
+  for (i in data._layers) {
+    var x = data._layers[i]._latlng.lat;
+    var y = data._layers[i]._latlng.lng;
+    c.push([x, y]);
+  }
+  return c;
+}
+// separar basado en nombre
+pathCoords = connectTheDots(ItinerarioLayer);
+
+var pathLine = L.polyline(pathCoords).addTo(mymap)
