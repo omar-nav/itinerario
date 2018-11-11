@@ -36,7 +36,6 @@ var baseLayers = {
 var geojson = L.control.layers(baseLayers).addTo(mymap);
 
 
-
 // COLORES
 function qualitativeColors(d) {
   return d === "0" ? '#e41a1c' :
