@@ -45,13 +45,6 @@ var ItinerarioLayer = L.geoJSON(itinerario, {
   }
 });
 
-// {
-//   radius: 8,
-//   fillOpacity: 1,
-//   color: 'black',
-//   fillColor: getColor(feature.properties.stype),
-//   weight: 1,
-// }
 
 // dibujar al mapa
 ItinerarioLayer.addTo(mymap);
@@ -65,16 +58,35 @@ var geojson = L.control.layers(featureLayers, null, {
   collapsed: false
 }).addTo(mymap);
 
-function connectTheDots(data) {
+
+
+
+function connectTheDots(data, index) {
   var c = [];
   for (i in data._layers) {
-    var x = data._layers[i]._latlng.lat;
-    var y = data._layers[i]._latlng.lng;
-    c.push([x, y]);
+    if (data._layers[i].feature.properties.ID_ITINERA === index) {
+      var x = data._layers[i]._latlng.lat;
+      var y = data._layers[i]._latlng.lng;
+      c.push([x, y]);
+    }
   }
+  // return line
   return c;
 }
-// separar basado en nombre
-pathCoords = connectTheDots(ItinerarioLayer);
 
-var pathLine = L.polyline(pathCoords).addTo(mymap)
+// start drawing lines
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
+let allWorkNumbers = [];
+// store all work numbers into array
+for (i in ItinerarioLayer._layers) {
+  let workNumber = ItinerarioLayer._layers[i].feature.properties.ID_ITINERA
+  allWorkNumbers.push(workNumber);
+}
+let uniqueWorkNumbers = allWorkNumbers.filter(onlyUnique);
+// separar basado en nombre
+for (j = 0; j < uniqueWorkNumbers.length; j++) {
+  pathCoords = connectTheDots(ItinerarioLayer, j);
+  var pathLine = L.polyline(pathCoords).addTo(mymap)
+}
